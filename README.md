@@ -1,44 +1,77 @@
-# Laravel Snowflake
-[![Build Status](https://travis-ci.org/kra8/laravel-snowflake.svg?branch=setup-travis)](https://travis-ci.org/kra8/laravel-snowflake)
-[![Latest Stable Version](https://poser.pugx.org/kra8/laravel-snowflake/v/stable)](https://packagist.org/packages/kra8/laravel-snowflake)
+# Laravel/Lumen Snowflake
+[![Build Status](https://travis-ci.org/maxsky/laravel-snowflake.svg?branch=master)](https://travis-ci.org/maxsky/laravel-snowflake)
+[![Latest Stable Version](https://poser.pugx.org/maxsky/laravel-snowflake/v/stable)](https://packagist.org/packages/maxsky/laravel-snowflake)
 [![License](https://poser.pugx.org/kra8/laravel-snowflake/license)](https://packagist.org/packages/kra8/laravel-snowflake)
+<a href="https://996.icu"><img src="https://img.shields.io/badge/link-996.icu-red.svg"></a>
 
-This Laravel package to generate 64 bit identifier like the snowflake within Twitter.
+This Laravel/Lumen package to generate 64 bit identifier like the snowflake within Twitter.
+
+
 
 # Installation
-```
-composer require "kra8/laravel-snowflake:^1.0"
 
-php artisan vendor:publish --provider="Kra8\Snowflake\SnowflakeServiceProvider"
+```bash
+composer require "maxsky/laravel-snowflake"
+
+# Just used with Laravel
+php artisan vendor:publish --provider="Snowflake\SnowflakeServiceProvider"
 ```
+
+
+
+# Configuration
+
+If `config/snowflake.php` not exist, run below:
+
+```bash
+# Just Laravel
+php artisan vendor:publish
+```
+
+If used Lumen framework, please copy `vendor/maxsky/laravel-snowflake/config/snowflake.php` file to `config` folder.
+
+And then add some environment config in `.env` file (if you used):
+
+```php
+SNOWFLAKE_EPOCH='2019-05-01 00:00:00'
+SNOWFLAKE_WORKER_ID=1
+SNOWFLAKE_DATACENTER_ID=1
+```
+
+
+
 # Usage
+
 Get instance
-``` php
-$snowflake = $this->app->make('Kra8\Snowflake\Snowflake');
-```
-or
-``` php
-$snowflake = resolve('Kra8\Snowflake\Snowflake');
+
+```php
+$snowflake = app('Snowflake\Snowflake');
 ```
 
 Generate snowflake identifier
-```
+
+```php
 $id = $snowflake->next();
 ```
+
+
+
 # Usage with Eloquent
-Add the `Kra8\Snowflake\HasSnowflakePrimary` trait to your Eloquent model.
+
+Add the `Snowflake\HasSnowflakePrimary` trait to your Eloquent model.
 This trait make type `snowflake` of primary key.  Don't forget to set the Auto increment property to false.
 
-``` php
+```php
 <?php
+
 namespace App;
 
-use Kra8\Snowflake\HasSnowflakePrimary;
+use Snowflake\HasSnowflakePrimary;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
-{
+class User extends Authenticatable {
+
     use HasSnowflakePrimary, Notifiable;
 
     /**
@@ -52,14 +85,13 @@ class User extends Authenticatable
 
 Finally, in migrations, set the primary key to `bigInteger` and `primary`.
 
-``` php
+```php
 /**
  * Run the migrations.
  *
  * @return void
  */
-public function up()
-{
+public function up() {
     Schema::create('users', function (Blueprint $table) {
         // $table->increments('id');
         $table->bigInteger('id')->primary();
@@ -73,11 +105,7 @@ public function up()
 ```
 
 
-# Configuration
-If `config/snowflake.php` not exist, run below:
-```
-php artisan vendor:publish
-```
 
-# Licence
-[MIT licence](https://github.com/kra8/laravel-snowflake/blob/master/LICENSE)
+# License
+
+[MIT License](https://github.com/kra8/laravel-snowflake/blob/master/LICENSE) From [Kra8](https://github.com/kra8/laravel-snowflake).
