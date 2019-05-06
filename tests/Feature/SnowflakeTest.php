@@ -8,7 +8,7 @@ class SnowflakeTest extends Orchestra\Testbench\TestCase {
 
     function testNextId() {
         $now = Carbon::now()->getTimestamp();
-        $epoch = Carbon::rawParse(config('snowflake.epoch'))->getTimestamp() * 1000;
+        $epoch = Carbon::createFromTimeString(config('snowflake.epoch'))->getTimestamp() * 1000;
         $id = app(Snowflake::class)->next();
         $timestamp = $id >> 22;
         $timestamp = ceil(($timestamp + $epoch) / 1000);
