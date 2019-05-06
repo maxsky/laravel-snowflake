@@ -1,19 +1,17 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Application;
 use Snowflake\Snowflake;
-use PHPUnit\Framework\TestCase;
 
-class SnowflakeTest extends TestCase {
+class SnowflakeTest extends Orchestra\Testbench\TestCase {
 
     function testNextId() {
-        $now = strtotime(date('Y-m-d H:i:s'));
-        $epoch = strtotime(config('snowflake.epoch')) * 1000;
+        $now = Carbon::now()->getTimestamp();
+        $epoch = Carbon::rawParse(config('snowflake.epoch'))->getTimestamp() * 1000;
         $id = app(Snowflake::class)->next();
-
         $timestamp = $id >> 22;
-        $timestamp = (int)round(($timestamp + $epoch) / 1000);
-
+        $timestamp = ceil(($timestamp + $epoch) / 1000);
         $this->assertTrue($timestamp - $now < 3);
     }
 
