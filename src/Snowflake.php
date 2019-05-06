@@ -1,17 +1,17 @@
 <?php
-namespace Kra8\Snowflake;
+
+namespace Snowflake;
 
 use Exception;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 
-class Snowflake
-{
-    const TIMESTAMP_LEFT_SHIFT      = 22;
+class Snowflake {
 
-    const DATACENTER_ID_LEFT_SHIFT  = 17;
+    const TIMESTAMP_LEFT_SHIFT = 22;
 
-    const WORKER_ID_LEFT_SHIFT      = 12;
+    const DATACENTER_ID_LEFT_SHIFT = 17;
+
+    const WORKER_ID_LEFT_SHIFT = 12;
 
     private $epoch;
 
@@ -23,9 +23,11 @@ class Snowflake
 
     private $workerId;
 
-    public function __construct()
-    {
-        if ($epoch = strtotime(Config::get('snowflake.epoch'))) {
+    /**
+     * @throws Exception
+     */
+    public function __construct() {
+        if ($epoch = strtotime(config('snowflake.epoch'))) {
             // *1000 for msec.
             $this->epoch = $epoch * 1000;
         } else {
@@ -34,10 +36,10 @@ class Snowflake
             throw new Exception($errorLog);
         }
 
-        $this->workerId         = Config::get('snowflake.worker_id', 1);
-        $this->datacenterId     = Config::get('snowflake.datacenter_id', 1);
-        $this->lastTimestamp    = $this->epoch;
-        $this->sequence         = 0;
+        $this->workerId = config('snowflake.worker_id', 1);
+        $this->datacenterId = config('snowflake.datacenter_id', 1);
+        $this->lastTimestamp = $this->epoch;
+        $this->sequence = 0;
     }
 
     /**
@@ -45,10 +47,9 @@ class Snowflake
      *
      * @return integer
      *
-     * @throw Exception
+     * @throws Exception
      */
-    public function next()
-    {
+    public function next() {
         $timestamp = $this->timestamp();
 
         if ($timestamp < $this->lastTimestamp) {
@@ -61,7 +62,7 @@ class Snowflake
             $this->sequence = $this->sequence + 1;
             if ($this->sequence > 4095) {
                 usleep(1);
-                $timestamp      = $this->timestamp();
+                $timestamp = $this->timestamp();
                 $this->sequence = 0;
             }
         } else {
@@ -71,9 +72,9 @@ class Snowflake
         $this->lastTimestamp = $timestamp;
 
         return (($timestamp - $this->epoch) << self::TIMESTAMP_LEFT_SHIFT)
-        | ($this->datacenterId << self::DATACENTER_ID_LEFT_SHIFT)
-        | ($this->workerId << self::WORKER_ID_LEFT_SHIFT)
-        | $this->sequence;
+            | ($this->datacenterId << self::DATACENTER_ID_LEFT_SHIFT)
+            | ($this->workerId << self::WORKER_ID_LEFT_SHIFT)
+            | $this->sequence;
     }
 
     /**
@@ -81,8 +82,7 @@ class Snowflake
      *
      * @return integer
      */
-    protected function timestamp()
-    {
+    protected function timestamp() {
         return round(microtime(true) * 1000);
     }
 }

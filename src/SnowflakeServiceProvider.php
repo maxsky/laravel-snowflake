@@ -1,28 +1,24 @@
 <?php
 
-namespace Kra8\Snowflake;
+namespace Snowflake;
 
 use Illuminate\Support\ServiceProvider;
-use Kra8\Snowflake\Snowflake;
 
-class SnowflakeServiceProvider extends ServiceProvider
-{
+class SnowflakeServiceProvider extends ServiceProvider {
     /**
      * Bootstrap any application services.
      *
      * @return void
      */
-     public function boot()
-     {
-         $this->publishes([
-             __DIR__ . '/../config/snowflake.php' => config_path('snowflake.php'),
-         ]);
-     }
+    public function boot() {
+        $this->publishes([
+            __DIR__ . '../config/snowflake.php' => base_path('config/snowflake.php'),
+        ]);
+    }
 
-     public function register()
-     {
-         $this->app->singleton(Snowflake::class, function () {
-             return new Snowflake();
-         });
-     }
+    public function register() {
+        $this->app->singleton(Snowflake::class, function () {
+            return new Snowflake();
+        });
+    }
 }

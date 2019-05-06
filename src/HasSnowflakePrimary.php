@@ -1,18 +1,17 @@
 <?php
-namespace Kra8\Snowflake;
 
-use Kra8\Snowflake\Snowflake;
+namespace Snowflake;
 
-trait HasSnowflakePrimary
-{
-    public static function bootHasSnowflakePrimary()
-    {
+trait HasSnowflakePrimary {
+
+    public static function bootHasSnowflakePrimary() {
         static::saving(function ($model) {
             if (is_null($model->getKey())) {
-                $keyName    = $model->getKeyName();
-                $id         = resolve(Snowflake::class)->next();
+                $keyName = $model->getKeyName();
+                $id = app(Snowflake::class)->next();
                 $model->setAttribute($keyName, $id);
             }
         });
     }
+
 }

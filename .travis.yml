@@ -3,7 +3,7 @@ language: php
 before_script:
     - travis_retry composer self-update
 
-php: 7.0
+php: "7.0"
 
 sudo: false
 
