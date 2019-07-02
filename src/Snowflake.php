@@ -42,6 +42,16 @@ class Snowflake {
         $this->sequence = 0;
     }
 
+    public function setParams($worker_id = 1, $dataCenter_id = 1, $epoch = null) {
+        if (!$epoch) {
+            $epoch = $this->timestamp();
+        }
+        $this->workerId = $worker_id;
+        $this->datacenterId = $dataCenter_id;
+        $this->lastTimestamp = $epoch;
+        return $this;
+    }
+
     /**
      * Generate the 64bit unique id.
      *
